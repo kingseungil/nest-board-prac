@@ -5,6 +5,7 @@ import {
     Delete,
     Get,
     Param,
+    ParseIntPipe,
     Patch,
     Post,
     UsePipes,
@@ -19,10 +20,10 @@ import { BoardStatusValidationPipe } from './pipes/board-status-validation.pipe'
 export class BoardsController {
     constructor(private boardsService: BoardsService) {}
 
-    // @Get('/')
-    // getAllBoard(): Board[] {
-    //     return this.boardsService.getAllBoards();
-    // }
+    @Get('/')
+    getAllBoard(): Promise<BoardEntity[]> {
+        return this.boardsService.getAllBoards();
+    }
 
     @Get('/:id')
     // Param 여러개 가져올 때 : @Param() params: string[]
@@ -30,17 +31,16 @@ export class BoardsController {
         return this.boardsService.getBoardById(id);
     }
 
-    // @Post('/')
-    // @UsePipes(ValidationPipe)
-    // createBoard(@Body() createBoardDto: CreateBoardDto): Board {
-    //     return this.boardsService.createBoard(createBoardDto);
-    // }
+    @Post('/')
+    @UsePipes(ValidationPipe)
+    createBoard(@Body() createBoardDto: CreateBoardDto): Promise<BoardEntity> {
+        return this.boardsService.createBoard(createBoardDto);
+    }
 
-    // @Delete('/:id')
-    // deleteBoard(@Param('id') id: string): object {
-    //     this.boardsService.deleteBoard(id);
-    //     return { message: '삭제 성공' };
-    // }
+    @Delete('/:id')
+    deleteBoard(@Param('id', ParseIntPipe) id: number): Promise<void> {
+        return this.boardsService.deleteBoard(id);
+    }
 
     // @Patch('/:id/status')
     // @UsePipes(ValidationPipe)

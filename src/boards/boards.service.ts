@@ -13,21 +13,21 @@ export class BoardsService {
         @InjectRepository(BoardEntity)
         private boardRepository: Repository<BoardEntity>,
     ) {}
-    // private boards: Board[] = [];
-    // getAllBoards(): Board[] {
-    //     return this.boards;
-    // }
-    // createBoard(createBoardDto: CreateBoardDto) {
-    //     const { title, description } = createBoardDto;
-    //     const board: Board = {
-    //         id: uuid(),
-    //         title,
-    //         description,
-    //         status: BoardStatus.PUBLIC,
-    //     };
-    //     this.boards.push(board);
-    //     return board;
-    // }
+    async getAllBoards(): Promise<BoardEntity[]> {
+        return await this.boardRepository.find();
+    }
+
+    async createBoard(createBoardDto: CreateBoardDto): Promise<BoardEntity> {
+        const { title, description } = createBoardDto;
+        const board = this.boardRepository.create({
+            title,
+            description,
+            status: BoardStatus.PUBLIC,
+        });
+        await this.boardRepository.save(board);
+        return board;
+    }
+
     async getBoardById(id: number): Promise<BoardEntity> {
         const board = await this.boardRepository.findOneBy({ boardId: id });
         if (!board) {
@@ -35,10 +35,13 @@ export class BoardsService {
         }
         return board;
     }
-    // deleteBoard(id: string): void {
-    //     const found = this.getBoardById(id);
-    //     this.boards = this.boards.filter((board) => board.id !== found.id);
-    // }
+    async deleteBoard(id: number): Promise<void> {
+        const result = await this.boardRepository.delete(id);
+        if (result.affected === 0) {
+            throw new NotFoundException(`${id} 게시글이 없어용`);
+        }
+    }
+
     // updateBoardStatus(id: string, status: BoardStatus): Board {
     //     const board = this.getBoardById(id);
     //     if (!board) {

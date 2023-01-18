@@ -11,7 +11,7 @@ import { BoardsModule } from './boards/boards.module';
             username: 'root',
             password: '0000',
             database: 'nest-prac',
-            synchronize: true,
+            synchronize: false,
             logging: false,
             entities: [__dirname + '/**/*.entity{.js,.ts}'],
             autoLoadEntities: true,
