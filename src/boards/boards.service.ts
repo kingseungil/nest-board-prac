@@ -42,12 +42,10 @@ export class BoardsService {
         }
     }
 
-    // updateBoardStatus(id: string, status: BoardStatus): Board {
-    //     const board = this.getBoardById(id);
-    //     if (!board) {
-    //         throw new NotFoundException(`해당 ${id} 게시글이 없어용`);
-    //     }
-    //     board.status = status;
-    //     return board;
-    // }
+    async updateBoardStatus(id: number, status: BoardStatus): Promise<BoardEntity> {
+        const board = await this.getBoardById(id);
+        board.status = status;
+        await this.boardRepository.save(board);
+        return board;
+    }
 }
