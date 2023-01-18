@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { Board } from './board.model';
 import { BoardsService } from './boards.service';
 import { CreateBoardDto } from './dto/create-board.dto';
@@ -21,5 +21,11 @@ export class BoardsController {
     @Post('/')
     createBoard(@Body() createBoardDto: CreateBoardDto) {
         return this.boardsService.createBoard(createBoardDto);
+    }
+
+    @Delete('/:id')
+    deleteBoard(@Param('id') id: string) {
+        this.boardsService.deleteBoard(id);
+        return { message: '삭제 성공' };
     }
 }
