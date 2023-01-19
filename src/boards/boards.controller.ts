@@ -1,3 +1,5 @@
+import { AuthGuard } from '@nestjs/passport';
+import { UseGuards } from '@nestjs/common/decorators/core/use-guards.decorator';
 import { BoardEntity } from './entity/board.entity';
 import {
     Body,
@@ -32,17 +34,20 @@ export class BoardsController {
     }
 
     @Post('/')
+    @UseGuards(AuthGuard())
     @UsePipes(ValidationPipe)
     createBoard(@Body() createBoardDto: CreateBoardDto): Promise<BoardEntity> {
         return this.boardsService.createBoard(createBoardDto);
     }
 
     @Delete('/:id')
+    @UseGuards(AuthGuard())
     deleteBoard(@Param('id', ParseIntPipe) id: number): Promise<void> {
         return this.boardsService.deleteBoard(id);
     }
 
     @Patch('/:id/status')
+    @UseGuards(AuthGuard())
     @UsePipes(ValidationPipe)
     updateBoardStatus(
         @Param('id', ParseIntPipe) id: number,
