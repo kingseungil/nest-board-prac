@@ -29,6 +29,16 @@ export class BoardsService {
         return board;
     }
 
+    async getAllBoardByUser(id: number): Promise<BoardEntity[]> {
+        const query = this.boardRepository.createQueryBuilder('board');
+        query.where('board.userUserId = :userId', { userId: id });
+        const boards = await query.getMany();
+        if (boards.length === 0) {
+            throw new NotFoundException(`해당 ${id} 유저의 게시글이 없어용`);
+        }
+        return boards;
+    }
+
     async getBoardById(id: number): Promise<BoardEntity> {
         const board = await this.boardRepository.findOneBy({ boardId: id });
         if (!board) {

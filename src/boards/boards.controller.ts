@@ -28,6 +28,13 @@ export class BoardsController {
     getAllBoard(): Promise<BoardEntity[]> {
         return this.boardsService.getAllBoards();
     }
+    @Get('/user/:id')
+    getAllBoardByUser(
+        // @GetUser() user: UserEntity,
+        @Param('id') id: number,
+    ): Promise<BoardEntity[]> {
+        return this.boardsService.getAllBoardByUser(id);
+    }
 
     @Get('/:id')
     // Param 여러개 가져올 때 : @Param() params: string[]
