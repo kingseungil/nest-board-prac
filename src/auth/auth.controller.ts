@@ -5,6 +5,7 @@ import { Body, Controller, Post, ValidationPipe } from '@nestjs/common';
 import { Req } from '@nestjs/common/decorators/http/route-params.decorator';
 import { UseGuards } from '@nestjs/common/decorators/core/use-guards.decorator';
 import { AuthGuard } from '@nestjs/passport';
+import { GetUser } from './decorator/get-user.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -23,8 +24,9 @@ export class AuthController {
     }
 
     @Post('/test')
-    @UseGuards(AuthGuard())
-    test(@Req() req) {
-        console.log('req', req.user);
+    @UseGuards(AuthGuard()) // req안에 user넣어주기 위함
+    // 커스텀 데코레이터를 이용해서 바로 user가져오기
+    test(@GetUser() user: UserEntity) {
+        console.log('req', user);
     }
 }
