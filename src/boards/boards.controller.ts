@@ -8,6 +8,7 @@ import {
     Controller,
     Delete,
     Get,
+    Logger,
     Param,
     ParseIntPipe,
     Patch,
@@ -22,10 +23,12 @@ import { BoardStatusValidationPipe } from './pipes/board-status-validation.pipe'
 
 @Controller('boards')
 export class BoardsController {
+    private logger = new Logger('BoardsController');
     constructor(private boardsService: BoardsService) {}
 
     @Get('/')
     getAllBoard(): Promise<BoardEntity[]> {
+        this.logger.verbose(`누군가 게시글을 불러왔어요!`);
         return this.boardsService.getAllBoards();
     }
     @Get('/user/:id')
@@ -49,6 +52,9 @@ export class BoardsController {
         @Body() createBoardDto: CreateBoardDto,
         @GetUser() user: UserEntity,
     ): Promise<BoardEntity> {
+        this.logger.verbose(
+            `${user.username}님이 게시글을 작성했어요! payload:${JSON.stringify(createBoardDto)}`,
+        );
         return this.boardsService.createBoard(createBoardDto, user);
     }
 
