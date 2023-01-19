@@ -5,12 +5,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { UnauthorizedException } from '@nestjs/common/exceptions';
+import { JwtService } from '@nestjs/jwt/dist';
 
 @Injectable()
 export class AuthService {
     constructor(
         @InjectRepository(UserEntity)
         private userRepository: Repository<UserEntity>,
+        private jwtService: JwtService,
     ) {}
     async signUp(authCredentialDto: AuthCredentialDto): Promise<UserEntity> {
         const { username, password } = authCredentialDto;
@@ -30,7 +32,7 @@ export class AuthService {
             }
         }
     }
-    async logIn(authCredentialDto: AuthCredentialDto): Promise<string> {
+    async logIn(authCredentialDto: AuthCredentialDto): Promise<{ accessToken: string }> {
         const { username, password } = authCredentialDto;
         const user = await this.userRepository.findOneBy({ username });
         if (!user) {
@@ -40,6 +42,9 @@ export class AuthService {
         if (!pwCheck) {
             throw new UnauthorizedException('비밀번호가 틀렸어용');
         }
-        return '로그인 성공';
+        // 유저 토큰 생성 (Secret + Payload)
+        const payload = { username };
+        const accessToken = await this.jwtService.sign(payload);
+        return { accessToken };
     }
 }
