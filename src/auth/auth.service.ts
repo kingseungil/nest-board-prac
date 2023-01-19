@@ -5,7 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { UnauthorizedException } from '@nestjs/common/exceptions';
-import { JwtService } from '@nestjs/jwt/dist';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
@@ -44,7 +44,7 @@ export class AuthService {
         }
         // 유저 토큰 생성 (Secret + Payload)
         const payload = { username };
-        const accessToken = await this.jwtService.sign(payload);
+        const accessToken = this.jwtService.sign(payload);
         return { accessToken };
     }
 }
