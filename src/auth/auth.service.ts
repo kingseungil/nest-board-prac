@@ -4,6 +4,7 @@ import { ConflictException, Injectable, InternalServerErrorException } from '@ne
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import { UnauthorizedException } from '@nestjs/common/exceptions';
 
 @Injectable()
 export class AuthService {
@@ -28,5 +29,17 @@ export class AuthService {
                 throw new InternalServerErrorException('앗 예상하지 못한 에러네요');
             }
         }
+    }
+    async logIn(authCredentialDto: AuthCredentialDto): Promise<string> {
+        const { username, password } = authCredentialDto;
+        const user = await this.userRepository.findOneBy({ username });
+        if (!user) {
+            throw new UnauthorizedException('아이디가 없네용');
+        }
+        const pwCheck = await bcrypt.compare(password, user.password);
+        if (!pwCheck) {
+            throw new UnauthorizedException('비밀번호가 틀렸어용');
+        }
+        return '로그인 성공';
     }
 }
