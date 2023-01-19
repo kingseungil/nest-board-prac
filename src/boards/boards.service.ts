@@ -1,3 +1,4 @@
+import { UserEntity } from './../auth/entity/user.entity';
 import { BoardEntity } from './entity/board.entity';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { BoardStatus } from './board-status.enum';
@@ -16,12 +17,13 @@ export class BoardsService {
         return await this.boardRepository.find();
     }
 
-    async createBoard(createBoardDto: CreateBoardDto): Promise<BoardEntity> {
+    async createBoard(createBoardDto: CreateBoardDto, user: UserEntity): Promise<BoardEntity> {
         const { title, description } = createBoardDto;
         const board = this.boardRepository.create({
             title,
             description,
             status: BoardStatus.PUBLIC,
+            user: user,
         });
         await this.boardRepository.save(board);
         return board;

@@ -12,7 +12,6 @@ export class BoardEntity {
     description: string;
     @Column()
     status: BoardStatus;
-
     @ManyToOne(() => UserEntity, (user) => user.boards, { eager: false })
     user: UserEntity;
 }
