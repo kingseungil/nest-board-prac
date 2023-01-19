@@ -31,7 +31,7 @@ export class BoardsController {
     @Get('/user/:id')
     getAllBoardByUser(
         // @GetUser() user: UserEntity,
-        @Param('id') id: number,
+        @Param('id', ParseIntPipe) id: number,
     ): Promise<BoardEntity[]> {
         return this.boardsService.getAllBoardByUser(id);
     }
@@ -54,8 +54,8 @@ export class BoardsController {
 
     @Delete('/:id')
     @UseGuards(AuthGuard())
-    deleteBoard(@Param('id', ParseIntPipe) id: number): Promise<void> {
-        return this.boardsService.deleteBoard(id);
+    deleteBoard(@Param('id', ParseIntPipe) id: number, @GetUser() user: UserEntity): Promise<void> {
+        return this.boardsService.deleteBoard(id, user);
     }
 
     @Patch('/:id/status')

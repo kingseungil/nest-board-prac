@@ -1,3 +1,4 @@
+import { UnauthorizedException } from '@nestjs/common/exceptions';
 import { UserEntity } from './../auth/entity/user.entity';
 import { BoardEntity } from './entity/board.entity';
 import { Injectable, NotFoundException } from '@nestjs/common';
@@ -46,10 +47,14 @@ export class BoardsService {
         }
         return board;
     }
-    async deleteBoard(id: number): Promise<void> {
-        const result = await this.boardRepository.delete(id);
+    async deleteBoard(id: number, user: UserEntity): Promise<void> {
+        const board = await this.getBoardById(id);
+        if (!board) {
+            throw new NotFoundException(`${id} 게시글이 없어요`);
+        }
+        const result = await this.boardRepository.delete({ boardId: id, user });
         if (result.affected === 0) {
-            throw new NotFoundException(`${id} 게시글이 없어용`);
+            throw new UnauthorizedException(`작성자만 삭제할 수 있어용`);
         }
     }
 

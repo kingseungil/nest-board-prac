@@ -13,7 +13,7 @@ import { AuthModule } from './auth/auth.module';
             password: '0000',
             database: 'nest-prac',
             synchronize: false,
-            logging: true,
+            logging: false,
             entities: [__dirname + '/**/*.entity{.js,.ts}'],
             autoLoadEntities: true,
         }),
